@@ -4,8 +4,11 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-validators = "*"
-youtube-dl = "*"
+validators = "==0.20.0"
+youtube-dl = "==2021.12.17"
+decorator = "==5.1.1"
+instaloader = "*"
+google = "*"
 
 [dev-packages]
 
