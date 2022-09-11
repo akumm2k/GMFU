@@ -1,14 +1,41 @@
+# Std lib imports
 import logging as log
-from googlesearch import search
+from urllib.parse import urlparse
 
-from utils import assert_domain
+# Third party imports
+from googlesearch import search
+from instaloader import Instaloader, Profile
+from google_images_search import GoogleImagesSearch
+
+# local imports
+from utils import assert_domain, random_filename, google_api_config
 
 
 log.basicConfig(
-    filename='grab_artword.log', encoding='utf-8', level=log.DEBUG,
+    level=log.DEBUG,
     format='%(asctime)s:%(levelname)s:%(message)s',
     datefmt='%m-%d-%Y %I:%M:%S %p',
 )
+
+def from_google(music_title: str):
+    """from_google 
+
+    downloads artwork from google for the song title using 
+    Google Custom Search API
+
+    :param music_title: the title of the song
+    :return: artwork filename
+    """
+    filename = random_filename(music_title, hidden=True)
+    gis = GoogleImagesSearch(**google_api_config())
+    search_params = {
+        'q': music_title,
+        'num': 1,
+        'fileType': 'jpg',
+        'imgSize': 'xxlarge',
+    }
+    gis.search(search_params=search_params, path_to_dir='./', custom_image_name=filename)
+    return filename
 
 def first_goo(search_str: str) -> str:
     """first_goo returns the first google search url 
@@ -24,18 +51,38 @@ def first_goo(search_str: str) -> str:
         raise log.error(f'no result found for: {search_str}')
     
 
-
-def grab_artwork(artist: str):
-    """grab_artwork resturns an artwork of the given artist
+def from_instagram(artist: str) -> str:
+    """from_instagram resturns an artwork of the given artist
 
     current implementation uses the artist's instagram's latest
     image
-    TODO:
-        - [ ] finish implementation
-            - [ ] use a str similarity metric to sort of verify the 
-            the artist's insta profile
+    TODO: implement seamless downloads, managing empty 
+        and fully consumed profiles
 
     :param artist: artist name
+    :return: img filename
     """
+    raise NotImplementedError
+
     insta_url = first_goo(f'{artist} instagram')
-    assert_domain(insta_url, "instagram")
+    assert_domain(insta_url, domain='instagram')
+
+    artist_username = urlparse(insta_url).path.replace('/', '') # path = '/{artist}'
+    loader = Instaloader(
+        quiet=True,
+        save_metadata=False,
+        download_videos=False,
+    )
+    artist_profile = Profile.from_username(loader.context, artist_username)
+    posts = artist_profile.get_posts()
+    print(artist_username)
+    if posts.count == 0:
+        print('ok')
+        log.error(f'{artist_username} has no instagram posts')
+    
+    # latest_post = next(artist_profile.get_posts())
+
+    # while True:
+    #     if (loader.download_post(latest_post, target=artist_profile.username))
+    
+    # return artist_profile.username
