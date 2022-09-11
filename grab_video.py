@@ -1,7 +1,7 @@
 import validators
 import youtube_dl as ydl
 import json
-from utils import assert_domain
+from utils import assert_domain, sugar_filename
 
 
 def validate_url(video_url: str) -> None:
@@ -16,17 +16,6 @@ def validate_url(video_url: str) -> None:
     assert validators.url(video_url), f"Bad URL: {video_url}" 
     assert_domain(video_url, 'youtube')
 
-def sugar_filename(sour_filename: str) -> str:
-    """sugar_filename polishes up the video filename
-
-    :param sour_filename: video filename string
-    :return: tweaked video filename
-    """
-    return (sour_filename.strip()
-        .replace(' ', '-')
-        .replace('/', '-')
-    ) + '.mp3'
-
 def grab_video(video_url: str) -> None:
     """grab an mp3 from the given youtube video_url
 
@@ -38,7 +27,7 @@ def grab_video(video_url: str) -> None:
         url=video_url, download=False
     )
 
-    filename = sugar_filename(video_info['title'])
+    filename = sugar_filename(video_info['title'], extension='.mp3')
     video_options = {
         'format': 'bestaudio/best',
         'keepvideo': False,
