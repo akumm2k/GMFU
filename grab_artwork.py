@@ -1,5 +1,14 @@
+import logging as log
 from googlesearch import search
+
 from utils import assert_domain
+
+
+log.basicConfig(
+    filename='grab_artword.log', encoding='utf-8', level=log.DEBUG,
+    format='%(asctime)s:%(levelname)s:%(message)s',
+    datefmt='%m-%d-%Y %I:%M:%S %p',
+)
 
 def first_goo(search_str: str) -> str:
     """first_goo returns the first google search url 
@@ -12,7 +21,8 @@ def first_goo(search_str: str) -> str:
     try:
         return url
     except StopIteration:
-        raise Exception(f'no result found for: {search_str}')
+        raise log.error(f'no result found for: {search_str}')
+    
 
 
 def grab_artwork(artist: str):
