@@ -11,6 +11,8 @@ instaloader = "*"
 google = "*"
 logger = "*"
 google-images-search = "*"
+eyed3 = "*"
+pydub = "*"
 
 [dev-packages]
 

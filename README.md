@@ -1,8 +1,20 @@
 # Grab Music from Youtube
 
-## TODO
+Grabs music from youtube and adds it to Apple Music's local library.
 
-- [ ] automate downloads
-    - [ ] use cronjobs / run everytime the url repository's timestamp is updated, ie, a new song request is made by adding the youtube url to the repository file.
-- [ ] add nice generic artwork to the downloaded mp3s
-- [ ] add them to my soundcloud
+## External Dependencies
+
+- [`ffmpeg`](https://ffmpeg.org)
+
+    Use your favorite package manager to install it
+
+## TODO:
+
+- [ ] Create a CLI
+- [ ] Work on other artwork sources
+
+## Current Usage
+
+```
+python3 main.py [url]
+```

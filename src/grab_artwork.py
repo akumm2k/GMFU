@@ -1,6 +1,7 @@
 # Std lib imports
-import logging as log
 from urllib.parse import urlparse
+import os
+from glob import glob
 
 # Third party imports
 from googlesearch import search
@@ -8,16 +9,24 @@ from instaloader import Instaloader, Profile
 from google_images_search import GoogleImagesSearch
 
 # local imports
-from utils import assert_domain, random_filename, google_api_config
-
-
-log.basicConfig(
-    level=log.DEBUG,
-    format='%(asctime)s:%(levelname)s:%(message)s',
-    datefmt='%m-%d-%Y %I:%M:%S %p',
+from .utils.utils import (
+    assert_domain, random_filename, google_api_credentials, 
+    log, IMG_DIR,
 )
 
-def from_google(music_title: str):
+def grab_artwork(music_title: str) -> str:
+    """grab_artwork
+
+    downloads the artwork for the given music_title
+    TODO: redo the logic to use different sources
+    
+    :param music_title: music title string
+    :return: artwork's file path
+    """
+    return from_google(music_title) # for now
+
+
+def from_google(music_title: str) -> str:
     """from_google 
 
     downloads artwork from google for the song title using 
@@ -26,16 +35,28 @@ def from_google(music_title: str):
     :param music_title: the title of the song
     :return: artwork filename
     """
-    filename = random_filename(music_title, hidden=True)
-    gis = GoogleImagesSearch(**google_api_config())
+    filename = random_filename(music_title)
+    gis = GoogleImagesSearch(**google_api_credentials())
     search_params = {
         'q': music_title,
         'num': 1,
         'fileType': 'jpg',
         'imgSize': 'xxlarge',
     }
-    gis.search(search_params=search_params, path_to_dir='./', custom_image_name=filename)
-    return filename
+
+    # download image
+    gis.search(
+        search_params=search_params, path_to_dir=f'./{IMG_DIR}', 
+        custom_image_name=filename
+    ) 
+    
+    # for some weird reason gis doesn't rename the image sometimes
+    if os.path.exists(f'./{IMG_DIR}/{filename}'):
+        # if gis named image correctly
+        return filename
+    # else return the latest downloaded image
+    return max(glob(f'./{IMG_DIR}/*.jpg'), key=os.path.getctime)
+    
 
 def first_goo(search_str: str) -> str:
     """first_goo returns the first google search url 
@@ -44,11 +65,13 @@ def first_goo(search_str: str) -> str:
     :raises Exception: if there's no search results
     :return: url for the first google result
     """
+    raise NotImplementedError
     url = next(search(search_str, stop=1))
     try:
         return url
     except StopIteration:
-        raise log.error(f'no result found for: {search_str}')
+        # log.error(f'no result found for: {search_str}')
+        pass
     
 
 def from_instagram(artist: str) -> str:
@@ -78,7 +101,7 @@ def from_instagram(artist: str) -> str:
     print(artist_username)
     if posts.count == 0:
         print('ok')
-        log.error(f'{artist_username} has no instagram posts')
+        # log.error(f'{artist_username} has no instagram posts')
     
     # latest_post = next(artist_profile.get_posts())
 

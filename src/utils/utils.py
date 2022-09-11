@@ -1,7 +1,20 @@
-import json 
+# Std library imports
+import json
+import os 
 from urllib.parse import urlparse
 from random import randint
 from datetime import datetime
+import re
+import logging as log
+
+log.basicConfig(
+    level=log.INFO,
+    format='%(asctime)s:%(levelname)s:%(message)s',
+    datefmt='%m-%d-%Y %I:%M:%S %p',
+)
+
+IMG_DIR = '.img'
+MP3_DIR = '.mp3'
 
 def sugar_filename(sour_filename: str, extension: str = '') -> str:
     """sugar_filename polishes up the video filename
@@ -14,17 +27,25 @@ def sugar_filename(sour_filename: str, extension: str = '') -> str:
     if (extension != '' and extension[0] != '.'):
         maybe_dot = '.'
 
-    return (sour_filename.strip()
-        .replace(' ', '-')
-        .replace('/', '-')
-    ) + maybe_dot + extension
+    valid_chars_patt, no_xtra_whitespace_patt = r'\W', r'( )+'
+    almost_valid = re.sub(valid_chars_patt, ' ', sour_filename)
+    valid = re.sub(no_xtra_whitespace_patt, ' ', almost_valid)
+
+    return re.sub(' ', '-', valid) + maybe_dot + extension
 
 def assert_domain(url: str, domain : str):
+    """assert_domain 
+
+    asserts that the given url has the given domain
+
+    :param url: the url to be verified
+    :param domain: the domain to verify the url with
+    """
     parse_result = urlparse(url)
     assert parse_result.hostname.split('.')[-2]  == domain, \
         f'{url} aint {domain}s'
 
-def random_filename(title: str = '', hidden: bool = False):
+def random_filename(title: str = '', hidden: bool = False) -> str:
     """random_filename
 
     returns a random filename that maybe hidden.
@@ -46,15 +67,29 @@ def random_filename(title: str = '', hidden: bool = False):
     return f'{maybe_dot}{sweet_title}-{date}-{rand_num}'
 
 
-def google_api_config():
-    with open('./google-api.json', 'r') as f:
+def google_api_credentials() -> dict[str, str]:
+    """google_api_config 
+
+    returns the Google Custom Search API credentials
+    from google-api.json
+
+    :return: json-morphed-dictionary
+    """
+    where = '.'
+    here = os.path.basename(os.getcwd())
+    if here == 'src':
+        where = '..'
+    elif here == 'utils':
+        where = '../..'
+
+    with open(f'{where}/google-api.json', 'r') as f:
         api_config = json.load(f)
         
         missing = False
         for k, v in api_config.items():
             if v == '':
-                print(f'{k} is missing in google_api_config')
+                print(f'{k} is missing in google-api.json')
                 missing = True
-        assert not missing, 'Missing google api config'
+        assert not missing, 'Missing google api credentials'
 
         return api_config
