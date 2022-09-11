@@ -84,12 +84,19 @@ def google_api_credentials() -> dict[str, str]:
 
     with open(f'{where}/google-api.json', 'r') as f:
         api_config = json.load(f)
-        
+        env_vars = {
+            "developer_key": "GCS_DEVELOPER_KEY",
+            "custom_search_cx": "GCS_CX"
+        }
+
         missing = False
         for k, v in api_config.items():
             if v == '':
-                print(f'{k} is missing in google-api.json')
-                missing = True
+                if not os.environ.get(env_vars[k]):
+                    log.error(f'{k} is missing. Put it in google-api.json or export {env_vars[k]}')
+                    missing = True
+                else: 
+                    api_config[k] = os.environ[env_vars[k]]
         assert not missing, 'Missing google api credentials'
 
         return api_config
