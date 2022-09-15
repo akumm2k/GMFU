@@ -8,7 +8,12 @@ Grabs music from youtube and adds it to Apple Music's local library.
 
     Use your favorite package manager to install it
 
-## Google Custom Search API
+## Artwork sources
+
+- Artist's Instagram - Currently, artist name is entered via an input prompt
+- Google image based on youtube title - Requires Custom Search API credentials
+
+## Google Custom Search API Setup
 
 For now, to be able to use this project, you need to enable Google Custom Search API, generate API key credentials and set a project:
 
@@ -26,10 +31,9 @@ Then, put your credentials in `google-api.json`
 ## TODO:
 
 - [ ] Create a CLI
-- [ ] Work on other artwork sources
 
 ## Current Usage
 
 ```
-python3 main.py [url]
+python3 main.py [youtube-url]
 ```

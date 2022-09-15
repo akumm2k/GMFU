@@ -15,6 +15,7 @@ log.basicConfig(
 
 IMG_DIR = '.img'
 MP3_DIR = '.mp3'
+GENERIC_IMG = './generic.jpg'
 
 def sugar_filename(sour_filename: str, extension: str = '') -> str:
     """sugar_filename polishes up the video filename
@@ -29,7 +30,7 @@ def sugar_filename(sour_filename: str, extension: str = '') -> str:
 
     valid_chars_patt, no_xtra_whitespace_patt = r'\W', r'( )+'
     almost_valid = re.sub(valid_chars_patt, ' ', sour_filename)
-    valid = re.sub(no_xtra_whitespace_patt, ' ', almost_valid)
+    valid = re.sub(no_xtra_whitespace_patt, ' ', almost_valid).strip()
 
     return re.sub(' ', '-', valid) + maybe_dot + extension
 
@@ -97,6 +98,8 @@ def google_api_credentials() -> dict[str, str]:
                     missing = True
                 else: 
                     api_config[k] = os.environ[env_vars[k]]
-        assert not missing, 'Missing google api credentials'
+        if missing: 
+            log.info('Missing google api credentials')
+            return False
 
         return api_config

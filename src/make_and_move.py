@@ -1,16 +1,17 @@
 # Std library imports
 import os
+from glob import glob
 from typing import Tuple
 
 # Third party imports
 import eyed3 as id3
 from eyed3.id3.frames import ImageFrame
-from .grab_artwork import grab_artwork
-from .grab_music import grab_music
 from pydub import AudioSegment
 
 # local imports
-from .utils.utils import log
+from .utils.utils import IMG_DIR, log
+from .grab_artwork import grab_artwork
+from .grab_music import grab_music
 
 def make_and_move(youtube_url: str) -> None:
     """make_and_move
@@ -44,11 +45,13 @@ def make(youtube_url: str) -> Tuple[str, str]:
     if (audiofile.tag == None):
         audiofile.initTag()
 
-    audiofile.tag.images.set(
-        ImageFrame.FRONT_COVER, 
-        open(artwork_file,'rb').read(), 
-        'image/jpeg'
-    )
+    with open(artwork_file, 'rb') as f:
+        audiofile.tag.images.set(
+            type_=ImageFrame.FRONT_COVER, 
+            img_data=f.read(), 
+            mime_type='image/jpeg',
+            description='song cover'
+        )
 
     audiofile.tag.save()
 
@@ -68,8 +71,9 @@ def move(music_file_path: str, artwork_file: str) -> None:
     :param music_file_path: the intermediary path to the audio file
     :param artwork_file: the intermediary path to the artwork
     """
-    log.info(f'Deleting {artwork_file}')
-    os.remove(artwork_file)
+    log.info(f'Emptying {IMG_DIR}')
+    empty_img_dir()
+
     music_file = os.path.basename(music_file_path)
     home = os.path.expanduser('~')
 
@@ -83,3 +87,7 @@ def move(music_file_path: str, artwork_file: str) -> None:
 
     apple_music_path = apple_music_path.replace(' ', r'\ ')
     os.system(f'open {apple_music_path}')
+
+def empty_img_dir():
+    for img in glob(os.path.join(IMG_DIR, '*')):
+        os.remove(img)
