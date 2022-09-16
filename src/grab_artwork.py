@@ -103,7 +103,8 @@ def from_instagram(artist: Optional[str] = None) -> str:
     """
     if artist is None: artist = input('Enter artist name: ')
     insta_url = first_goo(f'{artist} instagram')
-    assert_domain(insta_url, domain='instagram')
+    if not insta_url: return GENERIC_IMG
+    assert_domain(insta_url, domain='instagram') # for now
 
     artist_username = urlparse(insta_url).path.replace('/', '') # path = '/{artist}'
     loader = Instaloader(
@@ -114,11 +115,10 @@ def from_instagram(artist: Optional[str] = None) -> str:
     )
     artist_profile = Profile.from_username(loader.context, artist_username)
     posts = artist_profile.get_posts()
-    print(artist_username)
     if posts.count == 0:
         log.info(f'{artist_username} has no instagram posts')
         return GENERIC_IMG
-    
+
     latest_post = next(artist_profile.get_posts())
 
     downlaoded = loader.download_post(latest_post, target=artist_profile.username)

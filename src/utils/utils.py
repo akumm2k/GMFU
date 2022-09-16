@@ -90,7 +90,7 @@ def google_api_credentials() -> dict[str, str]:
             "custom_search_cx": "GCS_CX"
         }
 
-        missing = False
+        missing = (api_config == {})
         for k, v in api_config.items():
             if v == '':
                 if not os.environ.get(env_vars[k]):
@@ -99,7 +99,6 @@ def google_api_credentials() -> dict[str, str]:
                 else: 
                     api_config[k] = os.environ[env_vars[k]]
         if missing: 
-            log.info('Missing google api credentials')
-            return False
+            return False            
 
         return api_config
