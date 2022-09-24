@@ -32,8 +32,22 @@ Then, put your credentials in `google-api.json`
 ## TODO:
 
 - [ ] Create a CLI
+  - Parser options:
+    - [ ] rename audio file
+    - [ ] choose image by providing a url
+    - [ ] use instagram / google to choose image
+
+- [ ] Create script for out of the box functionality
 
 ## Current Usage
+
+### Install dependencies using pip
+
+```
+pip install -r requirements.txt
+```
+
+### Run
 
 ```
 python3 main.py [youtube-url]
