@@ -1,6 +1,6 @@
 # Std library imports
 import json
-import os 
+import os
 from urllib.parse import urlparse
 from random import randint
 from datetime import datetime
@@ -35,7 +35,7 @@ def sugar_filename(sour_filename: str, extension: str = '') -> str:
     return re.sub(' ', '-', valid) + maybe_dot + extension
 
 def assert_domain(url: str, domain : str):
-    """assert_domain 
+    """assert_domain
 
     asserts that the given url has the given domain
 
@@ -61,15 +61,15 @@ def random_filename(title: str = '', hidden: bool = False) -> str:
     sweet_title = sugar_filename(title)
     rand_num = randint(1_000_000, 3_000_000)
     date = datetime.now().strftime('%m-%d-%Y-%H:%M:%S')
-    
+
     maybe_dot = ''
     if hidden: maybe_dot = '.'
-    
+
     return f'{maybe_dot}{sweet_title}-{date}-{rand_num}'
 
 
 def google_api_credentials() -> dict[str, str]:
-    """google_api_config 
+    """google_api_config
 
     returns the Google Custom Search API credentials
     from google-api.json
@@ -96,9 +96,9 @@ def google_api_credentials() -> dict[str, str]:
                 if not os.environ.get(env_vars[k]):
                     log.error(f'{k} is missing. Put it in google-api.json or export {env_vars[k]}')
                     missing = True
-                else: 
+                else:
                     api_config[k] = os.environ[env_vars[k]]
-        if missing: 
-            return False            
+        if missing:
+            return False
 
         return api_config

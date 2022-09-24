@@ -24,9 +24,9 @@ def make_and_move(youtube_url: str) -> None:
     """
     music_file, artwork_file = make(youtube_url)
     move(music_file_path=music_file, artwork_file=artwork_file)
-    
+
 def make(youtube_url: str) -> Tuple[str, str]:
-    """make 
+    """make
 
     makes the audio file:
         grabs the music from youtube
@@ -38,18 +38,18 @@ def make(youtube_url: str) -> Tuple[str, str]:
     """
     music_file, music_title = grab_music(youtube_url)
     artwork_file = grab_artwork(music_title)
-    
+
     music = AudioSegment.from_file(f'./{music_file}')
     music.export(f'./{music_file}', format='mp3', bitrate='320k')
-    
+
     audiofile = id3.load(f'./{music_file}')
     if (audiofile.tag == None):
         audiofile.initTag()
 
     with open(artwork_file, 'rb') as f:
         audiofile.tag.images.set(
-            type_=ImageFrame.FRONT_COVER, 
-            img_data=f.read(), 
+            type_=ImageFrame.FRONT_COVER,
+            img_data=f.read(),
             mime_type='image/jpeg',
             description='song cover'
         )
@@ -65,7 +65,7 @@ def move(music_file_path: str, artwork_file: str) -> None:
     audio and artwork by:
         deleting the artwork
         moving the audio to the local apple music directory
-    
+
     the moved audio is then run in order to import it to the library
     the rest of the job is done by dear iCloud
 

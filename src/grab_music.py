@@ -15,7 +15,7 @@ def validate_url(video_url: str) -> None:
 
     :param video_url: string url
     """
-    assert validators.url(video_url), f"Bad URL: {video_url}" 
+    assert validators.url(video_url), f"Bad URL: {video_url}"
     assert_domain(video_url, 'youtube')
 
 def grab_music(video_url: str) -> None:
@@ -29,7 +29,7 @@ def grab_music(video_url: str) -> None:
         url=video_url, download=False
     )
 
-    filename = (f'./{MP3_DIR}/' + 
+    filename = (f'./{MP3_DIR}/' +
         sugar_filename(video_info['title'], extension='.mp3'))
     video_options = {
         'format': 'bestaudio/best',
@@ -41,5 +41,5 @@ def grab_music(video_url: str) -> None:
 
     with ydl.YoutubeDL(video_options) as downloader:
         downloader.download([video_info['webpage_url']])
-    
+
     return filename, video_info['title']
