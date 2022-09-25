@@ -38,8 +38,8 @@ def add_arguments_to_parser(parser) -> None:
     source_group = parser.add_mutually_exclusive_group()
     # use from_google as default if google credentials are available else instagram
     source_group.add_argument('-g', '--google', action='store_true')
-    source_group.add_argument('-i', '--ig', help='Add instagram username for artwork')
-    source_group.add_argument('-u', '--url', help='Add artwork url')
+    source_group.add_argument('-i', '--ig-username', help='Add instagram username for artwork')
+    source_group.add_argument('-u', '--art-url', help='Add artwork url')
     source_group.add_argument('--local', help='Add local artwork path')
 
 def main(args: list[str]) -> None:
