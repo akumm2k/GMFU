@@ -78,7 +78,7 @@ def move(music_file_path: str, artwork_file: str) -> None:
     music_file = os.path.basename(music_file_path)
     home = os.path.expanduser('~')
     apple_music_dir = \
-        f'{home}/Music/Music/Media.localized/Music/Unknown Artist/Unknown Album/'
+        os.path.join(home, 'Music/Music/Media.localized/Music/Unknown Artist/Unknown Album/')
 
     if platform != 'darwin': # no apple music directory in other platforms
         apple_music_dir = './'
