@@ -1,3 +1,6 @@
+# Std lib imports
+from typing import Tuple
+
 # Third party imports
 import validators
 import youtube_dl as ydl
@@ -18,10 +21,11 @@ def validate_url(video_url: str) -> None:
     assert validators.url(video_url), f"Bad URL: {video_url}"
     assert_domain(video_url, 'youtube')
 
-def grab_music(video_url: str) -> None:
+def grab_music(video_url: str) -> Tuple[str, str]:
     """grab an mp3 from the given youtube video_url
 
     :param video_url: youtube url string
+    :return: music filename, music title
     """
     validate_url(video_url)
 
