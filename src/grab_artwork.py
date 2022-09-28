@@ -85,7 +85,7 @@ def first_goo(search_str: str) -> str:
         return url
     except StopIteration:
         log.info(f'no google result found for: {search_str}')
-        return False
+        return ''
 
 
 def from_instagram(artist: Optional[str] = None) -> str:

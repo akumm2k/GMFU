@@ -43,7 +43,9 @@ def assert_domain(url: str, domain : str):
     :param domain: the domain to verify the url with
     """
     parse_result = urlparse(url)
-    assert parse_result.hostname.split('.')[-2]  == domain, \
+    hostname = parse_result.hostname
+    assert hostname is not None, f'No hostname in {url}?'
+    assert hostname.split('.')[-2]  == domain, \
         f'{url} aint {domain}s'
 
 def random_filename(title: str = '', hidden: bool = False) -> str:
@@ -99,6 +101,6 @@ def google_api_credentials() -> dict[str, str]:
                 else:
                     api_config[k] = os.environ[env_vars[k]]
         if missing:
-            return False
+            return {}
 
         return api_config

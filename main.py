@@ -42,7 +42,7 @@ def add_arguments_to_parser(parser) -> None:
     source_group.add_argument('-u', '--art-url', help='Add artwork url')
     source_group.add_argument('--local', help='Add local artwork path')
 
-def main(args: list[str]) -> None:
+def main(args_list: list[str]) -> None:
     parser = argparse.ArgumentParser(
         description=
             """download and configure audio file that's """
@@ -50,7 +50,7 @@ def main(args: list[str]) -> None:
             """if your platform is macOS"""
     )
     add_arguments_to_parser(parser)
-    args = parser.parse_args(args)
+    args = parser.parse_args(args_list)
 
     default_filename, video_title = grab_music(args.url)
     # * default_filename is just a polished version of the video_title
