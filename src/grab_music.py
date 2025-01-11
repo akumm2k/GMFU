@@ -3,10 +3,10 @@ from typing import Tuple
 
 # Third party imports
 import validators
-import youtube_dl as ydl
+from pytubefix import YouTube
 
 # local imports
-from .utils.utils import assert_domain, sugar_filename, MP3_DIR
+from .utils.utils import MP3_DIR, assert_domain, sugar_filename
 
 
 def validate_url(video_url: str) -> None:
@@ -19,7 +19,8 @@ def validate_url(video_url: str) -> None:
     :param video_url: string url
     """
     assert validators.url(video_url), f"Bad URL: {video_url}"
-    assert_domain(video_url, 'youtube')
+    assert_domain(video_url, "youtube")
+
 
 def grab_music(video_url: str) -> Tuple[str, str]:
     """grab an mp3 from the given youtube video_url
@@ -29,21 +30,22 @@ def grab_music(video_url: str) -> Tuple[str, str]:
     """
     validate_url(video_url)
 
-    video_info = ydl.YoutubeDL().extract_info(
-        url=video_url, download=False
+    video = (
+        YouTube(video_url, use_oauth=True, allow_oauth_cache=True)
+        .streams.filter(only_audio=True)
+        .first()
+    )
+    title = video.title
+    filename = f"./{MP3_DIR}/" + sugar_filename(
+        title, extension=".mp3"
     )
 
-    filename = (f'./{MP3_DIR}/' +
-        sugar_filename(video_info['title'], extension='.mp3'))
-    video_options = {
-        'format': 'bestaudio/best',
-        'audioformat': 'mp3',
-        'keepvideo': False,
-        'quiet': True,
-        'outtmpl': filename,
-    }
+    try:
+        video.download(
+            output_path=f"./{MP3_DIR}/",
+            filename=sugar_filename(title, extension=".mp3"),
+        )
+    except Exception as e:
+        print(f"Download Error: {e}")
 
-    with ydl.YoutubeDL(video_options) as downloader:
-        downloader.download([video_info['webpage_url']])
-
-    return filename, video_info['title']
+    return filename, title

@@ -5,13 +5,13 @@ name = "pypi"
 
 [packages]
 validators = "==0.20.0"
-youtube-dl = "==2021.12.17"
 decorator = "==5.1.1"
 instaloader = "*"
 google = "*"
 google-images-search = "*"
 eyed3 = "*"
 pydub = "*"
+pytubefix = "*"
 
 [dev-packages]
 
